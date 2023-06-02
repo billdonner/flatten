@@ -1,0 +1,23 @@
+{
+  "pins" : [
+    {
+      "identity" : "q20kshare",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/billdonner/q20kshare",
+      "state" : {
+        "branch" : "main",
+        "revision" : "e88c40fbc77b5ecdbe9e9572464727c6a44987dd"
+      }
+    },
+    {
+      "identity" : "swift-argument-parser",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/apple/swift-argument-parser.git",
+      "state" : {
+        "revision" : "fee6933f37fde9a5e12a1e4aeaa93fe60116ff2a",
+        "version" : "1.2.2"
+      }
+    }
+  ],
+  "version" : 2
+}

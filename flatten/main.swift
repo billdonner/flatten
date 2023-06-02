@@ -10,28 +10,23 @@ import ArgumentParser
 import q20kshare
 
 
-struct GameData : Codable, Hashable,Identifiable,Equatable {
-  internal init(subject: String, challenges: [Challenge]) {
-    self.subject = subject
-    self.challenges = challenges //.shuffled()  //randomize
-    self.id = UUID().uuidString
-    self.generated = Date()
+extension String {
+  var fixup : String {
+    return self.replacingOccurrences(of: ",", with: ";")
   }
+}
+func headerCSV() -> String {
+  return "Question,Topic,Hint,Ans-1,Ans-2,Ans-3,Ans-4,Correct,Explanation,Article,Image\n"
   
-  let id : String
-  let subject: String
-  let challenges: [Challenge]
-  let generated: Date
 }
 
-
 func onelineCSV(from c:Challenge) -> String {
-  var line = c.question + "," + c.topic + "," + c.hint + ","
+  var line = c.question.fixup + "," + c.topic.fixup + "," + c.hint.fixup + ","
   for a in c.answers {
-    line += a + ","
+    line += a.fixup + ","
   }
-  line += c.correct + "," + c.explanation +  "," + (c.article ?? "") + "," + (c.image ?? "")
-  return line
+  line += c.correct.fixup + "," + c.explanation.fixup +  "," + (c.article?.fixup ?? "") + "," + (c.image?.fixup ?? "")
+  return line + "\n" // need to separate
 }
 
 struct Flatten: ParsableCommand {
@@ -64,15 +59,23 @@ struct Flatten: ParsableCommand {
         print(">Flatten: the input at \(inputTextFileURL) could not be decoded \(error)")
       }
     }
-    return []
+    return challenges
   }
   
   func flatten_essence(_ outputCSVFile: URL, _ inputTextFile: URL) throws {
-    var outputHandle:FileHandle
-    outputHandle = try FileHandle(forWritingTo: outputCSVFile)
+   
     let contents = try String(contentsOf: inputTextFile)
     let challenges = try parseInputSomehow(contents.data(using: .utf8)!)
-    if challenges == [] { return}
+    if challenges == [] { print("No challenges in input"); return}
+    let x = outputCSVFile.absoluteString.dropFirst(7) //remove file://
+  
+    if (FileManager.default.createFile(atPath: String(x), contents: nil, attributes: nil)) {
+      print("\(x) created successfully.")
+    } else {
+      print("\(x) not created."); return
+    }
+    let outputHandle = try FileHandle(forWritingTo: outputCSVFile)
+    outputHandle.write(headerCSV().data(using:.utf8)!)
     for challenge in challenges {
       let x = onelineCSV(from:challenge)
       outputHandle.write(x.data(using: .utf8)!)
