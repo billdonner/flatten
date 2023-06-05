@@ -52,7 +52,7 @@
       </BuildableProductRunnable>
       <CommandLineArguments>
          <CommandLineArgument
-            argument = "https://billdonner.com/fs/gd/pumper-forprepper.json"
+            argument = "https://billdonner.com/fs/gdreadyforios01.json"
             isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument

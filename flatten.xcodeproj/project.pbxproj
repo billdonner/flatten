@@ -25,6 +25,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		881FE8532A2A96E200FE3847 /* chatgpt-webservice */ = {isa = PBXFileReference; lastKnownFileType = text; path = "chatgpt-webservice"; sourceTree = "<group>"; };
 		884DDEB72A257B7100DD138F /* flatten */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = flatten; sourceTree = BUILT_PRODUCTS_DIR; };
 		884DDEBA2A257B7100DD138F /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		884DDEC72A25896000DD138F /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
@@ -46,6 +47,7 @@
 		884DDEAE2A257B7100DD138F = {
 			isa = PBXGroup;
 			children = (
+				881FE8532A2A96E200FE3847 /* chatgpt-webservice */,
 				884DDEC72A25896000DD138F /* README.md */,
 				884DDEB92A257B7100DD138F /* flatten */,
 				884DDEB82A257B7100DD138F /* Products */,

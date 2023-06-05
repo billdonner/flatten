@@ -1,0 +1,113 @@
+
+build a swift vapor service with a rest api to look up data in a hardcoded table
+
+The table model looks like:
+
+{ "key":"123448349jdfkmdfkdf",
+"data":" now is not the time"}
+
+write the vapor endpoint in swift for
+ GET /data/key/{key} - Returns data with the specified key
+
+func getDataByKey(_ req: Request) throws -> Response {
+   let key = try req.parameters.next(String.self)
+   let data = try TableModel.find(key)
+   return data.encode(for: req)
+}
+
+write the vapor code for routes.swift
+write other necessary code
+
+
+// Routes file
+let dataRouter = router.grouped("data")
+dataRouter.get(String.parameter, "key", use: getDataByKey)
+
+// Model
+final class TableModel: Content {
+   let id: String
+   let data: String
+
+   func find(_ key: String) throws -> TableModel {
+       // Logic to find the table model with key or throw error
+       // ...
+
+       return TableModel(id: key, data: "now is not the time")
+   }
+}
+
+//Controller
+class DataController {
+   func getDataByKey(_ req: Request) throws -> Response {
+       let key = try req.parameters.next(String.self)
+       let data = try TableModel.find(key)
+       return data.encode(for: req)
+   }
+}
+
+// write test code to test the service
+import XCTest
+import Vapor
+@testable import VaporService
+
+class RouteTests: XCTestCase {
+   private let app: Application!
+
+   override func setUp() {
+       app = try! Application.testable()
+   }
+   
+   func testGetDataByKey() throws {
+      let request = HTTPRequest(method: .GET, url: URL(string: "/data/key/123448349jdfkmdfkdf")!)
+      let response = try app.sendRequest(to: request)
+      let data = try response.content.decode(TableModel.self).wait()
+
+       XCTAssertEqual(data.id, "123448349jdfkmdfkdf")
+       XCTAssertEqual(data.data, "now is not the time")
+   }
+}
+
+//write a script to start vapor and get the service running
+
+#!/usr/bin/env bash
+
+# delete the old migration folder
+rm -rf ./Resources/Migrations/
+
+# bootstrap vapor and create a new migration folder
+vapor update
+
+# migrate the database
+vapor migrate -y
+
+# build
+vapor build --release
+
+# cd to the build folder
+cd .build/release
+
+# Run Vapor
+vapor run --serve --port=8080
+
+// initialize vapor with a csv file to load the table
+
+// migrate.swift
+struct LoadData: Migration {
+  func prepare(on database: Database) -> EventLoopFuture<Void> {
+    let path = "path/to/csv/file.csv"
+    return database.transaction { conn in
+       let fileURL = URL(fileURLWithPath: path)
+       let stream = InputStream(url: fileURL)
+       let csv = try! CSVReader(stream: stream, hasHeaderRow: true)
+       try csv.forEach { line -> Void in
+           try conn.raw("INSERT INTO table (key, data) VALUES (${String(describing: line[0])}, ${String(describing: line[1])})")
+           .run()
+        }
+     }
+   }
+
+   // other migration functions
+}
+
+# Run the migration to load the csv data
+vapor migrate -y

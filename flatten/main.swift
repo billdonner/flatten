@@ -25,7 +25,8 @@ func onelineCSV(from c:Challenge) -> String {
   for a in c.answers {
     line += a.fixup + ","
   }
-  line += c.correct.fixup + "," + c.explanation.fixup +  "," + (c.article?.fixup ?? "") + "," + (c.image?.fixup ?? "")
+  line += c.correct.fixup + "," + (c.explanation?.fixup ?? "") +  ","
+  line +=   (c.article?.fixup ?? "") + "," + (c.image?.fixup ?? "")
   return line + "\n" // need to separate
 }
 
@@ -43,7 +44,7 @@ struct Flatten: ParsableCommand {
   func parseInputSomehow(_ contents:Data) throws -> [Challenge] {
     var challenges:[Challenge] = []
     do{
-      let gamedata =  try JSONDecoder().decode([GameData].self, from: contents)
+      let gamedata:[GameData] =  try JSONDecoder().decode([GameData].self, from: contents)
       print("Decoded GameData file created \(gamedata[0].generated) will be flattened")
       for g in gamedata
       {
