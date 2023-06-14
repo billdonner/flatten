@@ -1,6 +1,6 @@
 #  Flatten - turn q20K JSON into CSV
 
-Freeport.Software - for internal use
+Freeport.Software - for internal use 0.1.0
 
 
 ```
