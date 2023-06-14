@@ -47,8 +47,8 @@
 		884DDEAE2A257B7100DD138F = {
 			isa = PBXGroup;
 			children = (
-				881FE8532A2A96E200FE3847 /* chatgpt-webservice */,
 				884DDEC72A25896000DD138F /* README.md */,
+				881FE8532A2A96E200FE3847 /* chatgpt-webservice */,
 				884DDEB92A257B7100DD138F /* flatten */,
 				884DDEB82A257B7100DD138F /* Products */,
 			);
