@@ -16,16 +16,26 @@ extension String {
   }
 }
 func headerCSV() -> String {
-  return "Question,Topic,Hint,Ans-1,Ans-2,Ans-3,Ans-4,Correct,Explanation,Article,Image\n"
+  return "Question,Topic,Hint,Ans-1,Ans-2,Ans-3,Correct,Truth-1,Truth-2,Explanation,Article,Image\n"
   
 }
 
 func onelineCSV(from c:Challenge) -> String {
+  let opinions = c.opinions
+  var o1 = ""
+  var o2 = ""
+  if opinions.count>1 {
+    o2 = "\(opinions[1].truth)"
+  }
+  if opinions.count>0 {
+    o1 = "\(opinions[0].truth)"
+  }
   var line = c.question.fixup + "," + c.topic.fixup + "," + c.hint.fixup + ","
-  for a in c.answers {
+  for a in c.answers.dropLast(max(0,c.answers.count-3)) {
     line += a.fixup + ","
   }
-  line += c.correct.fixup + "," + (c.explanation?.fixup ?? "") +  ","
+  line += c.correct.fixup + "," + o1 + "," + o2
+  line += "," + (c.explanation?.fixup ?? "") +  ","
   line +=   (c.article?.fixup ?? "") + "," + (c.image?.fixup ?? "")
   return line + "\n" // need to separate
 }
@@ -45,7 +55,7 @@ struct Flatten: ParsableCommand {
     var challenges:[Challenge] = []
     do{
       let gamedata:[GameData] =  try JSONDecoder().decode([GameData].self, from: contents)
-      print("Decoded GameData file created \(gamedata[0].generated) will be flattened")
+      print(">GameData file created \(gamedata[0].generated) will be flattened")
       for g in gamedata
       {
         challenges += g.challenges
@@ -69,9 +79,9 @@ struct Flatten: ParsableCommand {
     let challenges = try parseInputSomehow(contents.data(using: .utf8)!)
     if challenges == [] { print("No challenges in input"); return}
     let x = outputCSVFile.absoluteString.dropFirst(7) //remove file://
-  
+    var linecount = 0
     if (FileManager.default.createFile(atPath: String(x), contents: nil, attributes: nil)) {
-      print("\(x) created successfully.")
+   //   print("\(x) created successfully.")
     } else {
       print("\(x) not created."); return
     }
@@ -80,8 +90,10 @@ struct Flatten: ParsableCommand {
     for challenge in challenges {
       let x = onelineCSV(from:challenge)
       outputHandle.write(x.data(using: .utf8)!)
+      linecount += 1
     }
     try outputHandle.close()
+    print(">Wrote \(linecount) lines to \(x)")
   }
   
   func run() throws {
@@ -90,10 +102,10 @@ struct Flatten: ParsableCommand {
       throw ValidationError("Input and substitutions file URLs must be valid")
     }
     let start_time = Date()
-    print("Command Line: \(CommandLine.arguments) \n")
+    print(">Command Line: \(CommandLine.arguments) \n")
     try flatten_essence(outputCSVFile, inputTextFile)
     let elapsed = Date().timeIntervalSince(start_time)
-    print("Elapsed \(elapsed) secs")
+    print(">Elapsed \(elapsed) secs")
   }
 }
 

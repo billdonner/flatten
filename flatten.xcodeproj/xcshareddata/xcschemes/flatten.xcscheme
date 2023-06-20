@@ -52,7 +52,7 @@
       </BuildableProductRunnable>
       <CommandLineArguments>
          <CommandLineArgument
-            argument = "https://billdonner.com/fs/gd/readyforios01.json"
+            argument = "https://billdonner.com/fs/gd/readyforios02.json"
             isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
